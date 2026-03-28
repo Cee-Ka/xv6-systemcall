@@ -200,6 +200,7 @@ UPROGS=\
 	$U/_tree\
 	$U/_diff\
 	$U/_du\
+	$U/_trace\
 
 ifeq ($(LAB),syscall)
 UPROGS += \
