@@ -14,6 +14,8 @@ void testcall(void)
 
     if (sysinfo(&info) < 0)
         fail("sysinfo failed");
+    printf("sysinfo freemem: %ld\n", info.freemem);
+    printf("sysinfo nproc: %ld\n", info.nproc);
 }
 
 void testmem(void)
