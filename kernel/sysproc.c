@@ -6,7 +6,7 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "sysinfo.h"
-
+#include "ptree.h"
 uint64
 sys_exit(void)
 {
@@ -119,4 +119,30 @@ sys_sysinfo(void)
     return -1;
 
   return 0;
+}
+uint64
+sys_ptree(void)
+{
+  uint64 address;
+  int max;
+  int n;
+  struct ptreeinfo kbuf[NPROC];
+
+  argaddr(0, &address);
+  argint(1, &max);
+
+  if(max <= 0)
+    return -1;
+
+  if(max > NPROC)
+    max = NPROC;
+
+  n = getprocs(kbuf, max);
+  if(n < 0)
+    return -1;
+
+  if(copyout(myproc()->pagetable, address, (char *)kbuf, n * sizeof(struct ptreeinfo)) < 0)
+    return -1;
+
+  return n;
 }
