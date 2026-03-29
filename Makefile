@@ -201,6 +201,7 @@ UPROGS=\
 	$U/_diff\
 	$U/_du\
 	$U/_trace\
+	$U/_sysinfotest
 
 ifeq ($(LAB),syscall)
 UPROGS += \
