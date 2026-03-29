@@ -43,3 +43,6 @@ void *memcpy(void *, const void *, uint);
 // umalloc.c
 void *malloc(uint);
 void free(void *);
+
+struct ptreeinfo;
+int ptree(struct ptreeinfo *buf, int max);
