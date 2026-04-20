@@ -145,4 +145,43 @@ sys_ptree(void)
     return -1;
 
   return n;
+uint64
+sys_pgaccess(void)
+{
+  uint64 vaddr;     // Địa chỉ ảo bắt đầu
+  int num;          // Số lượng trang cần kiểm tra
+  uint64 res_addr;  // Địa chỉ user space để ghi kết quả (bitmask)
+
+  argaddr(0, &vaddr);
+  argint(1, &num);
+  argaddr(2, &res_addr);
+
+  if(num < 0 || num > 64) return -1;
+
+  struct proc *p = myproc();
+  uint64 mask = 0; // Biến lưu trữ kết quả (mỗi bit đại diện cho 1 trang)
+
+  for(int i = 0; i < num; i++){
+    // Lấy địa chỉ ảo của trang thứ i
+    uint64 current_vaddr = vaddr + i * PGSIZE;
+    
+    // Tìm PTE tương ứng với địa chỉ ảo
+    pte_t *pte = walk(p->pagetable, current_vaddr, 0);
+
+    // pte có tồn tại và hợp lệ không?
+    if(pte != 0 && (*pte & PTE_V)){
+      // Nếu trang đã được truy cập
+      if(*pte & PTE_A){
+        mask |= (1L << i);     // Bật bit thứ i trong biến mask
+        *pte &= ~PTE_A;        // Reset cờ PTE_A về 0 để theo dõi cho lần sau
+      }
+    }
+  }
+  
+  // Copy dữ liệu từ mask xuống vùng nhớ res_addr của user
+  if(copyout(p->pagetable, res_addr, (char *)&mask, sizeof(mask)) < 0)
+    return -1;
+
+  return 0; // Thành công
+
 }
