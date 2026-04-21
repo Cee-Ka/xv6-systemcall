@@ -23,7 +23,7 @@ int main(){
         close(fd2[1]);
         read(fd2[0], buffer, 1);
         if(buffer[0] == '1')
-            printf("%d: received ping\n", getpid());
+            printf("%d: received pong\n", getpid());
         close(fd2[0]);
     }
     exit(0);

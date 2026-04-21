@@ -145,6 +145,7 @@ sys_ptree(void)
     return -1;
 
   return n;
+}
 uint64
 sys_pgaccess(void)
 {
